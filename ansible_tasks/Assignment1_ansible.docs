@@ -1,0 +1,58 @@
+1) Installing Ansible using pip,
+	- # sudo apt-get install python-pip 
+	- # pip install ansible
+2) Display the Ansible version and man page to STDOUT.
+	- # ansible --version
+	o/p 2.0.0.2
+	- # man ansible
+ 
+3) Check all the possible parameters you need to know in ansible.cfg file.
+	- # cat /etc/ansible/ansible.cfg
+	#inventory      = /etc/ansible/hosts
+	#library        = /usr/share/my_modules/
+	#remote_tmp     = $HOME/.ansible/tmp
+	#forks          = 5
+	#poll_interval  = 15
+	#sudo_user      = root
+	#ask_sudo_pass = True
+	#ask_pass      = True
+	#transport      = smart
+	#remote_port    = 22
+	#module_lang    = C
+4) Ansible Inventory: Check the default inventory file for ansible control master and use  inventory, run ansible ping commands on various inventory groups. Try this on minimum of two virtual machines.(You can use any of these Docker/Vagrant)
+	# ssh-keygen
+	find ip of node using
+	# ifconfig
+	then copy public key(ssh) of ansible server to its node using
+	# ssh-copy-id -i root@192.168.1.105 (it will copy pub. ssh key at /home/hemant/.ssh/authorized_keys file)
+	now use editor to write your inventory or specify the ip address of your nodes under [testServer] using command:
+	# sudo vim /etc/ansible/hosts
+	[testServer]
+	192.168.1.105
+	:wq!
+	run ad-hoc simple ping command to test the connectivity from node using;
+	# ansible -m ping'testServer'
+
+5)In ~/.ansible.cfg file (create the file if it doesn't exist already) do the following:
+-> Create a new directory ~/.ansible/retry-files and set retry_files_save_path to it.
+-> Set the Ansible system forks to 10
+ 	# cd /home/hemant
+	# touch .ansible.cfg
+	and then copy the content of /etc/ansible/ansible.cfg to .ansible.cfg\
+
+	set fork value 10 using
+	# sudo vim /etc/ansible/hosts
+	
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+ Now install the nginx using ad-hoc command on ssh connected node using
+	# ansible all -s -m apt -a 'pkg=nginx state=installed update_cache=true'
+
+ Host a static website on minimum three hosts using inventory, content of static website is "Index page of Ansible assignment"
+Document root /opt/html
+
+- First do this manually and then with jenkins using ansible plugin or execute shell.
+- only use ansible modules.	
+		# pending....
+ 
+	
