@@ -1,0 +1,89 @@
+
+1) Fetch and display to STDOUT Ansible facts using the setup module.
+
+# ansible all -m setup --tree /tmp/facts.d
+
+192.168.0.10 | SUCCESS => {
+
+"ansible_facts": {
+
+"ansible_all_ipv4_addresses": [
+
+"192.168.0.30"
+
+],
+
+"ansible_all_ipv6_addresses": [
+
+"fe80::a00:27ff:fe6b:b72"
+
+],
+
+"ansible_apparmor": {
+
+"status": "disabled"
+
+},
+
+"ansible_architecture": "x86_64",
+
+"ansible_bios_date": "12/01/2006",
+
+"ansible_bios_version": "VirtualBox",
+
+"ansible_cmdline": {
+
+2) Fetch and display only the "virtual" subset of facts for each host.
+
+# ansible all -m setup -a 'gather_subset=virtual'
+
+3) Fetch and display the value of fully qualified domain name (FQDN) of each host from their Ansible facts
+
+# ansible all -m setup --tree /tmp/facts | grep fqdn
+
+"ansible_fqdn": "localhost.localdomain",
+
+"ansible_fqdn": "ansible1.com",
+
+
+4) Display the uptime of all hosts using the command module.
+
+# ansible all -m command -a 'uptime'
+
+192.168.0.10 | SUCCESS | rc=0 >>
+
+11:18:05 up 45 min, 3 users, load average: 0.00, 0.00, 0.00
+
+192.168.0.30 | SUCCESS | rc=0 >>
+
+11:16:04 up 46 min, 3 users, load average: 0.00, 0.00, 0.00
+
+
+
+5) Ping all hosts except the 'control' host using the --limit option
+
+ansible all -m ping --limit 'webservers:!192.168.0.30'
+
+192.168.0.10 | SUCCESS => {
+
+"changed": false,
+
+"ping": "pong"
+
+}
+
+
+6)  Setup Java8 on the hosts in the "App" group using the apt module.
+
+  first connect node system through ssh with ansible controle master
+-> Install add-apt-repostory:
+ # ansible webservers -m apt -a "name=software-properties-common state=latest"
+-> Add Oracle Java Repository:
+ # ansible webservers -m apt_repository -a "repo='ppa:webupd8team/java'"
+-> Accept Java 8 License:
+ # ansible webservers -m debconf -a "name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'"
+-> Install Oracle Java 8:
+ # ansible webservers -m apt -a "oracle-java8-installer"
+ # ansible webservers -m apt -a "ca-certificates"
+ # ansible webservers -m apt -a "oracle-java8-set-default"
+
