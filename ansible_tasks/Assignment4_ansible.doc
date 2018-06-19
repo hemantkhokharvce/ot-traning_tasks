@@ -1,0 +1,31 @@
+﻿                            Assignment-4
+
+1)The tomcat7 is installed in all host.
+2)Has the war file in webapps folder specified in appwar.
+3)Tomcat is started on each host.
+
+Soln:
+---
+ - name: install deploy war file on app group
+   host: app
+   become: true
+   become_user: root
+   gather_facts: true
+   tasks:
+    - name: Install java 
+      apt: name=java-1.8.0-openjdk state=latest
+    - name: set JAVA_HOME and JRE_HOME environment variables
+      lineinfile: path=/etc/environment line="JAVA_HOME=/usr/lib/jvm/java-8-oracle"         
+      line="JRE_HOME=/usr/lib/jvm/java-8-oracle/jre"
+    - name: install tomcat7
+      apt: name=tomcat7 state=present update_cache=yes
+    - name: Install Tomcat Admin package
+      apt: name=tomcat-webapps state=latest
+    - name: Install Tomcat Admin package
+      apt: name=tomcat-admin-webapps state=latest
+    - name: "copy war file"
+      copy: src=/temp/sample/sample.war     dest=/usr/share/tomcat8/webapps/sample.war
+    - name: "start tomcat7"
+      service: name=tomcat7 state=stoped
+    - name: "start tomcat7"
+      service: name=tomcat7 state=started
