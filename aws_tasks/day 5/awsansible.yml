@@ -1,0 +1,36 @@
+---
+- name: "ansible aws cloud modules"
+  hosts: localhost
+  gather_facts: true
+  tasks:
+  - name: "Creating  Key pair in mumbai"
+    ec2_key:
+      name: awskey
+      region: ap-south-1
+      state: present
+  - name: "security group"
+    ec2_group:
+      name: wizardaws
+      description: security group with rule descriptions
+      vpc_id: vpc-80521ce8
+      region: ap-south-1
+      rules:
+       - proto: tcp
+         from_port: 22
+         to_port: 22
+         cidr_ip: 0.0.0.0/0
+  - name: "ec2 instance creating"
+    ec2:
+      key_name: awskey
+      instance_type: t2.micro
+      image: ami-41e9c52e
+      volumes:
+        - device_name: /dev/xvda
+          volume_type: gp2
+          volume_size: 08
+      instance_tags:
+          Name: instance_1
+      vpc_subnet_id: subnet-4dc6b525
+      region: ap-south-1
+      assign_public_ip: yes
+      count: 1
